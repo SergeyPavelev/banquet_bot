@@ -10,7 +10,8 @@ start_inline_buttons_admin = [
 start_menu_admin = InlineKeyboardMarkup(inline_keyboard=start_inline_buttons_admin)
 
 # Клавиатура для отмены действия
-back_button = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Отмена')]], resize_keyboard=True)
+cancel_button = [[InlineKeyboardButton(text='Отмена', callback_data='cancel')]]
+cancel_menu = InlineKeyboardMarkup(inline_keyboard=cancel_button)
 
 # Клавиатура администратора
 admin_panel_buttons = [
@@ -26,7 +27,7 @@ edit_list_users_buttons = [
     [InlineKeyboardButton(text='Добавить пользователя', callback_data='add_user')],
     [InlineKeyboardButton(text='Редактировать пользователя', callback_data='edit_user')],
     [InlineKeyboardButton(text='Удалить пользователя', callback_data='delete_user')],
-    [InlineKeyboardButton(text='Главное меню', callback_data='main_menu')],
+    [InlineKeyboardButton(text='Вернуться назад', callback_data='admin_panel')],
 ]
 
 edit_list_users_menu = InlineKeyboardMarkup(inline_keyboard=edit_list_users_buttons)
@@ -36,7 +37,7 @@ edit_list_tasks_buttons = [
     [InlineKeyboardButton(text='Добавить задание', callback_data='add_task')],
     [InlineKeyboardButton(text='Редактировать задание', callback_data='add_task')],
     [InlineKeyboardButton(text='Удалить задание', callback_data='delete_task')],
-    [InlineKeyboardButton(text='Главное меню', callback_data='main_menu')],
+    [InlineKeyboardButton(text='Вернуться назад', callback_data='admin_panel')],
 ]
 
-edit_list_tasks_menu = InlineKeyboardMarkup(inline_keyboard=edit_list_users_buttons)
+edit_list_tasks_menu = InlineKeyboardMarkup(inline_keyboard=edit_list_tasks_buttons)
