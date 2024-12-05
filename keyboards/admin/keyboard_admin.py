@@ -35,7 +35,7 @@ edit_list_users_menu = InlineKeyboardMarkup(inline_keyboard=edit_list_users_butt
 # Клавиатура для редактирования списка заданий
 edit_list_tasks_buttons = [
     [InlineKeyboardButton(text='Добавить задание', callback_data='add_task')],
-    [InlineKeyboardButton(text='Редактировать задание', callback_data='add_task')],
+    [InlineKeyboardButton(text='Редактировать задание', callback_data='edit_task')],
     [InlineKeyboardButton(text='Удалить задание', callback_data='delete_task')],
     [InlineKeyboardButton(text='Вернуться назад', callback_data='admin_panel')],
 ]

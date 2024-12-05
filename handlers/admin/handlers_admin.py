@@ -1,11 +1,10 @@
-from aiogram import types, F, Router
+from aiogram import F, Router
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from text.admin import text_admin
 from keyboards.admin import keyboard_admin
-from handlers.admin.states_admin import AddUser, DeleteUser, EditUser
+from handlers.admin.states_admin import AddUser, DeleteUser, EditUser, AddTask, DeleteTask, EditTask
 from database.database import Database
 
 
@@ -55,7 +54,7 @@ async def add_new_user(message: Message, state: FSMContext):
 
 # Выводим список пользователей и запрашиваем id нужного пользователя
 @router.callback_query(F.data == 'delete_user')
-async def get_user_id_delete(callback: CallbackQuery, state: FSMContext):
+async def display_all_users_delete(callback: CallbackQuery, state: FSMContext):
     await state.set_state(DeleteUser.user_id)
     
     await callback.message.delete()
@@ -75,7 +74,7 @@ async def delete_user(message: Message, state: FSMContext):
 
 # Выводим список пользователей и запрашиваем id нужного пользователя
 @router.callback_query(F.data == 'edit_user')
-async def get_user_id_edit(callback: CallbackQuery, state: FSMContext):
+async def display_all_users_edit(callback: CallbackQuery, state: FSMContext):
     await state.set_state(EditUser.user_id)
     
     await callback.message.delete()
@@ -105,9 +104,74 @@ async def get_new_user_name(message: Message, state: FSMContext):
     await message.answer(text=text_admin.edit_user, reply_markup=keyboard_admin.edit_list_users_menu)    
     await state.clear()
 
+# Запрашиваем у пользователя название нового задания
+@router.callback_query(F.data == 'add_task')
+async def get_new_task(callback: CallbackQuery, state: FSMContext):
+    await state.set_state(AddTask.name_task)
     
-    
+    await callback.message.delete()
+    await callback.message.answer(text=text_admin.get_new_task, reply_markup=keyboard_admin.cancel_menu)
 
+# Сохраняем новое задание в базу данных
+@router.message(AddTask.name_task)
+async def add_new_task(message: Message, state: FSMContext):
+    name_task = message.text
+    
+    db.add_task(name_task=name_task)
+    
+    await message.answer(text=text_admin.add_task, reply_markup=keyboard_admin.edit_list_tasks_menu)
+    await state.clear()
+
+# Выводим все задания и запрашиваем у пользователя id задания, которое он хочет удалить
+@router.callback_query(F.data == 'delete_task')
+async def display_all_tasks_delete(callback: CallbackQuery, state: FSMContext):
+    await state.set_state(DeleteTask.task_id)
+    
+    await callback.message.delete()
+    await callback.message.answer(text=text_admin.get_id_task)
+    await callback.message.answer(text=db.get_all_tasks(), reply_markup=keyboard_admin.cancel_menu)
+
+# Удаляем выбранное задание из базы данных
+@router.message(DeleteTask.task_id)
+async def delete_task(message: Message, state: FSMContext):
+    task_id = message.text
+    
+    db.delete_task(task_id=task_id)
+    
+    await message.answer(text=text_admin.delete_task, reply_markup=keyboard_admin.edit_list_tasks_menu)
+    await state.clear()
+
+# Выводим все задания и запрашиваем у пользователя id задания, которое он хочет изменить
+@router.callback_query(F.data == 'edit_task')
+async def display_all_tasks_edit(callback: CallbackQuery, state: FSMContext):
+    await state.set_state(EditTask.task_id)
+    
+    await callback.message.delete()
+    await callback.message.answer(text=text_admin.get_id_task)
+    await callback.message.answer(text=db.get_all_tasks(), reply_markup=keyboard_admin.cancel_menu)
+
+# Получаем id задания, которое пользователь хочет удалить, и запрашиваем новое название
+@router.message(EditTask.task_id)
+async def get_id_task_edit(message: Message, state: FSMContext):
+    await state.set_state(EditTask.new_name_task)
+    
+    task_id = message.text
+    await state.update_data(task_id=task_id)
+    
+    await message.answer(text=text_admin.get_new_task, reply_markup=keyboard_admin.cancel_menu)
+
+# Получаем новое название задания и обновляем данные в базе данных
+@router.message(EditTask.new_name_task)
+async def get_new_name_task_edit(message: Message, state: FSMContext):
+    new_name_task = message.text
+    
+    data_state = await state.get_data()
+    task_id = data_state.get('task_id')
+    
+    db.edit_task_name(task_id=task_id, new_name_task=new_name_task)
+    
+    await message.answer(text=text_admin.edit_task, reply_markup=keyboard_admin.edit_list_tasks_menu)   
+    await state.clear()
 
 # Отмена state
 @router.callback_query(F.data == 'cancel')
