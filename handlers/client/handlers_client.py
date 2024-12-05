@@ -1,7 +1,6 @@
-from aiogram import types, F, Router
+from aiogram import F, Router
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
-import random
 
 from text.client import text_client
 from keyboards.client import keyboard_client
