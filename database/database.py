@@ -1,4 +1,5 @@
 import sqlite3 as sql
+import random
 
 
 class Database:
@@ -92,4 +93,18 @@ class Database:
             self.con.commit()
         except sql.Error as e:
             print(f"Ошибка при редактировании названия задания: {e}")
+    
+    def generate_values(self):
+        try:
+            all_users = self.cur.execute("SELECT * FROM users").fetchall()
+            all_tasks = self.cur.execute("SELECT * FROM tasks").fetchall()
+            
+            if all_users == '':
+                return 'Пользователей нет'
+            if all_tasks == '':
+                return 'Заданий нет'
+            
+            return f'{random.choice(all_users)[1]} - {random.choice(all_tasks)[1]}'
+        except sql.Error as e:
+            print(f'Ошибка генерации значений: {e}')
             

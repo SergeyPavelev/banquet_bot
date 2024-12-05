@@ -4,16 +4,16 @@ from aiogram.fsm.context import FSMContext
 
 from text.admin import text_admin
 from keyboards.admin import keyboard_admin
-from handlers.admin.states_admin import AddUser, DeleteUser, EditUser, AddTask, DeleteTask, EditTask
+from states.states_admin import AddUser, DeleteUser, EditUser, AddTask, DeleteTask, EditTask
 from database.database import Database
 
 
 router = Router()
 db = Database(db_file='db.sqlite3')
 
-# Выводится главное меню
-@router.callback_query(F.data == 'main_menu')
-async def main_menu(callback: CallbackQuery):
+# Выводится главное меню для админа
+@router.callback_query(F.data == 'main_menu_admin')
+async def main_menu_admin(callback: CallbackQuery):
     await callback.message.delete()
     await callback.message.answer(text=text_admin.main_munu, reply_markup=keyboard_admin.start_menu_admin)
 

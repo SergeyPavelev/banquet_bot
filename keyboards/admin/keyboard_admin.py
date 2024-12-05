@@ -17,7 +17,7 @@ cancel_menu = InlineKeyboardMarkup(inline_keyboard=cancel_button)
 admin_panel_buttons = [
     [InlineKeyboardButton(text='Редактировать список пользователей', callback_data='edit_list_users')],
     [InlineKeyboardButton(text='Редактировать список заданий', callback_data='edit_list_tasks')],
-    [InlineKeyboardButton(text='Главное меню', callback_data='main_menu')],
+    [InlineKeyboardButton(text='Главное меню', callback_data='main_menu_admin')],
 ]
 
 admin_panel_menu = InlineKeyboardMarkup(inline_keyboard=admin_panel_buttons)
